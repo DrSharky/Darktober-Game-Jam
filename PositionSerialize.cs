@@ -15,7 +15,7 @@ public class PositionSerialize : MonoBehaviour
     void Start ()
     {
         modelName = armature.transform.parent.gameObject.name;
-        filePath = directory + modelName + "/" + lastFileIndex + ".txt";
+        filePath = directory + modelName + lastFileIndex + ".txt";
 	}
 	
 	void Update ()
@@ -36,7 +36,7 @@ public class PositionSerialize : MonoBehaviour
             string lastFile = files[files.Length - 1].Split('.')[0];
             lastFileIndex = int.Parse(lastFile.Substring(lastFile.Length - 1));
             lastFileIndex++;
-            filePath = directory + modelName + "/" + lastFileIndex + ".txt";
+            filePath = directory + modelName + lastFileIndex + ".txt";
         }
 
         StreamWriter writer = new StreamWriter(filePath, true);
