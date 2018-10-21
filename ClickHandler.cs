@@ -24,6 +24,14 @@ public class ClickHandler : MonoBehaviour
         EventManager.StartListening("ToggleDots", toggleDotListener);
     }
 
+    //void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.F))
+    //    {
+    //        EventManager.TriggerEvent("ToggleDots");
+    //    }
+    //}
+
     void OnMouseDown()
     {
         screenPoint = Camera.main.WorldToScreenPoint(transform.position);
@@ -37,6 +45,15 @@ public class ClickHandler : MonoBehaviour
         transform.position = curPosition;
     }
 
+    // -- CREATED FOR DEBUG PURPOSES!!! -- DELETE LATER --
+    //private void OnMouseUp()
+    //{
+    //    Vector3 screenPt = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
+    //    Debug.Log("Screen Pos: " + screenPt);
+    //    Debug.Log("World Pos: " + transform.position);
+    //}
+    // -- DEBUG ONLY!! -- DELETE AFTER USE --
+
     void ToggleDot()
     {
         if (redDotInstance == null)
@@ -44,14 +61,22 @@ public class ClickHandler : MonoBehaviour
         else
             Destroy(redDotInstance);
 
-        if (pointPosInstance == null)
-        {
-            screenPoint = Camera.main.WorldToScreenPoint(transform.position);
-            pointPosInstance = Instantiate(pointPos, screenPoint, new Quaternion());
-            pointPosInstance.GetComponent<Text>().text = "(" + transform.position.x + ", " + transform.position.y + ", " + transform.position.z + ")";
-            pointPosInstance.transform.parent = GameObject.Find("Canvas").transform;
-        }
-        //else
-        //    Destroy(pointPosInstance);
+        //TogglePositionDisplay();
     }
+
+    // -- CREATED FOR DEBUG PURPOSES!!! -- DELETE LATER --
+    void TogglePositionDisplay()
+    {
+        Vector3 screenPosition;
+         if (pointPosInstance == null)
+         {
+             screenPosition = Camera.main.WorldToScreenPoint(transform.position);
+             pointPosInstance = Instantiate(pointPos, screenPosition, new Quaternion());
+             pointPosInstance.GetComponent<Text>().text = "(" + transform.position.x + ", " + transform.position.y + ", " + transform.position.z + ")";
+             pointPosInstance.transform.parent = GameObject.Find("Canvas").transform;
+         }
+         else
+            Destroy(pointPosInstance);
+    }
+    // -- DEBUG ONLY!! -- DELETE AFTER USE --
 }
