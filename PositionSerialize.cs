@@ -20,6 +20,7 @@ public class PositionSerialize : MonoBehaviour
     {
         modelName = armature.transform.parent.gameObject.name;
         filePath = directory + modelName + lastFileIndex + ".txt";
+<<<<<<< HEAD
         boneCount = armature.transform.childCount;
 
         ////If file already exists, find last file count & set filePath to last file.
@@ -34,6 +35,11 @@ public class PositionSerialize : MonoBehaviour
     }
 
     void Update ()
+=======
+	}
+	
+	void Update ()
+>>>>>>> origin/master
     {
         if (Input.GetKeyDown(KeyCode.V))
             WritePositions();
