@@ -16,21 +16,18 @@ public class ClickHandler : MonoBehaviour
     GameObject pointPos;
     GameObject pointPosInstance;
 
+    private bool disableControl = false;
+
     Action toggleDotListener;
+    Action finishListener;
 
     void Start()
     {
         toggleDotListener = new Action(ToggleDot);
+        finishListener = new Action(DeleteDots);
         EventManager.StartListening("ToggleDots", toggleDotListener);
+        EventManager.StartListening("Finish", finishListener);
     }
-
-    //void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.F))
-    //    {
-    //        EventManager.TriggerEvent("ToggleDots");
-    //    }
-    //}
 
     void OnMouseDown()
     {
@@ -40,19 +37,13 @@ public class ClickHandler : MonoBehaviour
 
     void OnMouseDrag()
     {
-        Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-        Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-        transform.position = curPosition;
+        if (!disableControl)
+        {
+            Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
+            Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
+            transform.position = curPosition;
+        }
     }
-
-    // -- CREATED FOR DEBUG PURPOSES!!! -- DELETE LATER --
-    //private void OnMouseUp()
-    //{
-    //    Vector3 screenPt = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-    //    Debug.Log("Screen Pos: " + screenPt);
-    //    Debug.Log("World Pos: " + transform.position);
-    //}
-    // -- DEBUG ONLY!! -- DELETE AFTER USE --
 
     void ToggleDot()
     {
@@ -60,23 +51,15 @@ public class ClickHandler : MonoBehaviour
             redDotInstance = Instantiate(redDot, transform);
         else
             Destroy(redDotInstance);
-
-        //TogglePositionDisplay();
     }
 
-    // -- CREATED FOR DEBUG PURPOSES!!! -- DELETE LATER --
-    void TogglePositionDisplay()
+    void DeleteDots()
     {
-        Vector3 screenPosition;
-         if (pointPosInstance == null)
-         {
-             screenPosition = Camera.main.WorldToScreenPoint(transform.position);
-             pointPosInstance = Instantiate(pointPos, screenPosition, new Quaternion());
-             pointPosInstance.GetComponent<Text>().text = "(" + transform.position.x + ", " + transform.position.y + ", " + transform.position.z + ")";
-             pointPosInstance.transform.parent = GameObject.Find("Canvas").transform;
-         }
-         else
-            Destroy(pointPosInstance);
+        disableControl = true;
+        GameObject[] dots = GameObject.FindGameObjectsWithTag("Reddot");
+        for(int i = 0; i < dots.Length; i++)
+        {
+            Destroy(dots[i]);
+        }
     }
-    // -- DEBUG ONLY!! -- DELETE AFTER USE --
 }

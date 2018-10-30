@@ -2,40 +2,46 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 public class PositionComparison : MonoBehaviour
 {
     [SerializeField]
-    GameObject armature;
+    private GameObject armature;
 
-    const float MAX_POINTS = 100.0f;
-    int boneCount = 0;
-    float pointTotal = 0.0f;
+    private const float MAX_POINTS = 100.0f;
+    private int boneCount = 0;
+    private float pointTotal = 0.0f;
+    private int refImageIndex;
 
     [SerializeField]
-    RefPositions refPositions;
+    private RefPositions refPositions;
 
-    List<Vector3> currentPositions;
-    Vector3[] selectedRef;
+    private List<Vector3> currentPositions;
+    private Vector3[] selectedRef;
+
+    private Action calculateScoreListener;
+
+    public static double scoreFinal = 0.0;
+
+    public static Texture2D refImage;
 
 	// Use this for initialization
 	void Start ()
     {
         //Use -1 to exclude the base bone.
         boneCount = armature.transform.childCount - 1;
-        selectedRef = refPositions.vectorList[UnityEngine.Random.Range(0,1)].vectorSet;
-        Debug.Log(selectedRef);
+        refImageIndex = UnityEngine.Random.Range(0,5);
+        selectedRef = refPositions.vectorList[refImageIndex].vectorSet;
+        refImage = refPositions.vectorList[refImageIndex].image;
+
+        calculateScoreListener = new Action(Compare);
+        EventManager.StartListening("Finish", calculateScoreListener);
     }
-	
-	// Update is called once per frame
-	void Update ()
-    {
-        if (Input.GetKeyDown(KeyCode.Return))
-            Compare();
-	}
 
     void Compare ()
     {
+        Debug.Log("Compare");
         double xTotalDiff = 0;
         double yTotalDiff = 0;
         for (int i = 0; i < boneCount; i++)
@@ -56,9 +62,13 @@ public class PositionComparison : MonoBehaviour
         Debug.Log("X Total Diff: " + xTotalDiff);
         Debug.Log("Y Total Diff: " + yTotalDiff);
         double boneFloat = boneCount;
+        if (xTotalDiff > 10)
+            xTotalDiff -= 10;
+        if (yTotalDiff > 10)
+            yTotalDiff -= 10;
         double combinedDiff = (xTotalDiff + yTotalDiff) * (1 / (boneFloat / (100 / (boneFloat * 2))));
         Debug.Log("Combined Diff: " + combinedDiff);
-        double scoreFinal = Math.Round((MAX_POINTS - combinedDiff), 1);
+        scoreFinal = Math.Round((MAX_POINTS - combinedDiff), 1);
         if (scoreFinal < 0)
             scoreFinal = 0;
         Debug.Log("Score: " + scoreFinal);
